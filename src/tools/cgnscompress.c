@@ -12,7 +12,12 @@ int main (int argc, char **argv)
     char *inpfile, *outfile;
     int inpcg;
     size_t inpsize, outsize;
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    struct __stat64 st;
+#else
     struct stat st;
+#endif
 
     if (argc < 2 || argc > 3) {
         fprintf(stderr, "usage: cgnscompress InputFile [OutputFile]\n");
@@ -21,7 +26,12 @@ int main (int argc, char **argv)
     inpfile = argv[1];
     outfile = argv[argc-1];
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    if (_stat64(inpfile, &st)) {
+#else
     if (stat(inpfile, &st)) {
+#endif
         fprintf (stderr, "can't stat %s\n", inpfile);
         exit (1);
     }
@@ -32,7 +42,12 @@ int main (int argc, char **argv)
     if (cgio_compress_file (inpcg, outfile))
         cgio_error_exit("cgio_compress_file");
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    if (_stat64(outfile, &st)) {
+#else
     if (stat(outfile, &st)) {
+#endif
         fprintf (stderr, "can't stat %s\n", outfile);
         exit (1);
     }

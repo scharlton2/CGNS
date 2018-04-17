@@ -556,9 +556,19 @@ int cgio_check_file (const char *filename, int *file_type)
     char buf[32];
     FILE *fp;
     static char *HDF5sig = "\211HDF\r\n\032\n";
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    struct __stat64 st;
+#else
     struct stat st;
+#endif
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    if (ACCESS (filename, 0) || _stat64 (filename, &st) ||
+#else
     if (ACCESS (filename, 0) || stat (filename, &st) ||
+#endif
         S_IFREG != (st.st_mode & S_IFREG)) {
         last_err = CGIO_ERR_NOT_FOUND;
         return last_err;

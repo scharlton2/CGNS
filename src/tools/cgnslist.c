@@ -146,7 +146,12 @@ int main (int argc, char *argv[])
     float cgns_version;
     int n = 1, cgio, file_type, brief = 0;
     char *name, rootname[CGIO_MAX_NAME_LENGTH+1];
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    struct __stat64 st;
+#else
     struct stat st;
+#endif
     char version[CGIO_MAX_NAME_LENGTH+1];
     char created[CGIO_MAX_NAME_LENGTH+1];
     char modified[CGIO_MAX_NAME_LENGTH+1];
@@ -190,7 +195,12 @@ int main (int argc, char *argv[])
     if (argind == argc)
         print_usage (usgmsg, "CGNSfile not given");
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    if (_stat64 (argv[argind], &st)) {
+#else
     if (stat (argv[argind], &st)) {
+#endif
         fprintf (stderr, "can't stat %s\n", argv[argind]);
         exit (1);
     }

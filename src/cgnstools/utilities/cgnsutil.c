@@ -303,9 +303,16 @@ cgsize_t solution_index (ZONE *z, SOLUTION *s, cgsize_t i, cgsize_t j, cgsize_t 
 
 int file_exists (char *file)
 {
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    struct __stat64 st;
+
+    if (access (file, 0) || _stat64 (file, &st) ||
+#else
     struct stat st;
 
     if (access (file, 0) || stat (file, &st) ||
+#endif
         S_IFREG != (st.st_mode & S_IFMT)) return 0;
     return 1;
 }
@@ -316,11 +323,20 @@ int file_exists (char *file)
 
 int is_executable (char *file)
 {
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    // temporary fix until v3.3.2 is available
+    struct __stat64 st;
+#else
     struct stat st;
+#endif
 
     /* needs to be executable and not a directory */
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    if (access (file, 1) || _stat64 (file, &st) ||
+#else
     if (access (file, 1) || stat (file, &st) ||
+#endif
         S_IFDIR == (st.st_mode & S_IFMT))
         return (0);
     return (1);

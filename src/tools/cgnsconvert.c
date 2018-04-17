@@ -32,7 +32,11 @@ int main (int argc, char **argv)
     int n, inptype, outtype = CGIO_FILE_NONE;
     int inpcg, outcg, links = 0;
     int force = 0;
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    struct __stat64 inpst, outst;
+#else
     struct stat inpst, outst;
+#endif
     time_t ts, te;
     static char *FileType[] = {"NONE", "ADF", "HDF5"};
 
@@ -71,7 +75,11 @@ int main (int argc, char **argv)
     sprintf(tempfile, "%s.temp", outfile);
     unlink(tempfile);
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    if (_stat64 (inpfile, &inpst)) {
+#else
     if (stat (inpfile, &inpst)) {
+#endif
         fprintf (stderr, "can't stat %s\n", inpfile);
         exit (1);
     }
@@ -115,7 +123,11 @@ int main (int argc, char **argv)
         exit (1);
     }
 
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    if (_stat64 (outfile, &outst)) {
+#else
     if (stat (outfile, &outst)) {
+#endif
         fprintf (stderr, "can't stat %s\n", outfile);
         exit (1);
     }

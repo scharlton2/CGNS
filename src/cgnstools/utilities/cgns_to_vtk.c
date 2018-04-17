@@ -929,7 +929,11 @@ int main (int argc, char *argv[])
     int elemsets = 0;
     cgsize_t sizes[9];
     CGNS_ENUMT(ZoneType_t) zonetype;
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    struct __stat64 st;
+#else
     struct stat st;
+#endif
     FILE *fp;
 
     if (argc < 2)
@@ -960,7 +964,11 @@ int main (int argc, char *argv[])
 
     if (argind >= argc)
         print_usage (usgmsg, "filename not specified");
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+    if (_stat64 (argv[argind], &st)) {
+#else
     if (stat (argv[argind], &st)) {
+#endif
         fprintf (stderr, "can't stat <%s>\n", argv[argind]);
         exit (1);
     }
@@ -992,7 +1000,11 @@ int main (int argc, char *argv[])
     /* file output directory */
 
     if (++argind < argc) {
+#if defined(_WIN32) && !defined(__USE_ORIGINAL__)
+        if (_stat64 (argv[argind], &st) &&
+#else
         if (stat (argv[argind], &st) &&
+#endif
 #ifdef _WIN32
             _mkdir (argv[argind])) {
 #else
