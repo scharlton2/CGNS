@@ -50,8 +50,8 @@ environment:
 
 # Operating system (build VM template)
 image:
-##  - Visual Studio 2013
-  - Visual Studio 2017
+  - Visual Studio 2013
+##  - Visual Studio 2017
 ##  - Visual Studio 2019
 
 # scripts that are called at very beginning, before repo cloning
@@ -82,8 +82,8 @@ install:
   - mkdir 1.8
   - cd 1.8
   - set HDF5_1_8_VER=%HDF5_1_8_VER%
-  - curl -O https://gamma.hdfgroup.org/ftp/pub/outgoing/QATEST/hdf518/relbinaries/windows/hdf5-%HDF5_1_8_VER%-Std-win10_64-vs14.zip
-  - ps: Expand-Archive hdf5-$($env:HDF5_1_8_VER)-Std-win10_64-vs14.zip -DestinationPath .
+  - curl -O https://gamma.hdfgroup.org/ftp/pub/outgoing/QATEST/hdf518/relbinaries/windows/hdf5-%HDF5_1_8_VER%-Std-win7_64-vs12.zip
+  - ps: Expand-Archive hdf5-$($env:HDF5_1_8_VER)-Std-win7_64-vs12.zip -DestinationPath .
   - cd hdf
   - msiexec /i HDF5-%HDF5_1_8_VER%-win64.msi /quiet /qn /norestart /log install.log
   - type install.log
@@ -91,8 +91,8 @@ install:
   - mkdir 1.10
   - cd 1.10
   - set HDF5_1_10=%HDF5_1_10_VER%
-  - curl -O https://gamma.hdfgroup.org/ftp/pub/outgoing/QATEST/hdf5110/relbinaries/windows/hdf5-%HDF5_1_10_VER%-Std-win10_64-vs14.zip
-  - ps: Expand-Archive hdf5-$($env:HDF5_1_10_VER)-Std-win10_64-vs14.zip -DestinationPath .
+  - curl -O https://gamma.hdfgroup.org/ftp/pub/outgoing/QATEST/hdf5110/relbinaries/windows/hdf5-%HDF5_1_10_VER%-Std-win7_64-vs12.zip
+  - ps: Expand-Archive hdf5-$($env:HDF5_1_10_VER)-Std-win7_64-vs12.zip -DestinationPath .
   - cd hdf
   - msiexec /i HDF5-%HDF5_1_10_VER%-win64.msi /quiet /qn /norestart /log install.log
   - type install.log
