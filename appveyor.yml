@@ -50,14 +50,16 @@ environment:
 
 # Operating system (build VM template)
 image:
-  - Visual Studio 2013
-  - Visual Studio 2019
+##  - Visual Studio 2013
+  - Visual Studio 2017
+##  - Visual Studio 2019
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
   - echo %APPVEYOR_BUILD_WORKER_IMAGE%
   - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" (set GENERATOR="Visual Studio 16 2019" && set SGEN=vs2019-x64)
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" (set GENERATOR="Visual Studio 15 2017 Win64" && set SGEN=vs2017-x64)
   - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" (set GENERATOR="Visual Studio 12 2013 Win64" && set SGEN=vs2013-x64)
   - echo %GENERATOR%
 
