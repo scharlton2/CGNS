@@ -16,6 +16,7 @@ branches:
   # whitelist
   only:
     - app-v4.1.1
+    - app-v4.1.1-vs12
 
   # blacklist
   # except:
