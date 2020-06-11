@@ -49,11 +49,18 @@ environment:
     HDF_DIR: "/Program Files/HDF_Group/HDF5/%HDF5_VER%/cmake"
 
 # Operating system (build VM template)
-os: Visual Studio 2019
+image:
+  - Visual Studio 2013
+  - Visual Studio 2019
 
 # scripts that are called at very beginning, before repo cloning
 init:
   - git config --global core.autocrlf input
+  - echo %APPVEYOR_BUILD_WORKER_IMAGE%
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" (set GENERATOR="Visual Studio 15 2019" && set SGEN=vs2019-x64)
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" (set GENERATOR="Visual Studio 12 2013 Win64" && set SGEN=vs2013-x64)
+  - echo %GENERATOR%
+
 
 # clone directory
 clone_folder: c:\projects\CGNS
@@ -112,7 +119,7 @@ before_build:
   - cd c:\projects\CGNS_BUILD
   - cmake --version
   - SET HDF5_DIR=/Program Files/HDF_Group/HDF5/%HDF5_VER%/cmake
-  - cmake -G "Visual Studio 14 Win64" ^
+  - cmake -G "%GENERATOR%" ^
      %build_opt% ^
      -D CMAKE_C_FLAGS:STRING="" ^
      -D CMAKE_BUILD_TYPE:STRING=Release ^
@@ -128,9 +135,12 @@ before_build:
      -D CMAKE_INSTALL_PREFIX:PATH="." c:\projects\CGNS
 
 build_script:
-  - cmd: cmake --build . --config "%configuration%"
+  - cmd: echo cmake --build . --config "%configuration%"
 
 test_script:
   - cmd: set PATH=C:\projects\CGNS_BUILD\src\%configuration%;%PATH%
   - cmd: set PATH=C:\Program Files\HDF_Group\HDF5\%HDF5_VER%\bin;%PATH%
-  - cmd: ctest .
+  - cmd: ECHO ctest .
+
+after_test:
+  - cmd: ECHO cmake --install . --config "%configuration%"
